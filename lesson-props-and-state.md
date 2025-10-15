@@ -128,5 +128,3 @@ function Counter() {
 - [useState Hook (W3Schools)](https://www.w3schools.com/react/react_usestate.asp)
 
 ---
-
-Feel free to copy these examples and resources into your lesson or slides!

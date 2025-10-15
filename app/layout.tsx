@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
-import "./globals.css";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,20 +24,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${geistMono.variable} antialiased`}
-      >
-        <header style={{ background: '#1e90ff', borderBottom: '4px solid #f0ead6', marginBottom: '2rem' }}>
-          <nav style={{ display: 'flex', gap: '1.5rem', padding: '1rem 2rem', maxWidth: 900, margin: '0 auto' }}>
-            <a href="/" style={{ fontWeight: 900, color: '#f0ead6' }}>EDUcational</a>
-            <a href="/shop" style={{fontWeight: 600, color: '#f0ead6'  }}>Shop</a>
-            <a href="/product" style={{ fontWeight: 600, color: '#f0ead6'  }}>Product</a>
-            <a href="/cart" style={{ fontWeight: 600, color: '#f0ead6' }}>Cart</a>
-            <a href="/checkout" style={{ fontWeight: 600, color: '#f0ead6' }}>Checkout</a>
-          </nav>
-        </header>
-        <main style={{ minHeight: '100vh', maxWidth: 900, margin: '0 auto' }}>{children}</main>
-        <footer style={{ background: '#1e90ff',textAlign: 'center', fontWeight: 400, padding: '2rem 0', color: '#f0ead6', fontSize: 20, borderTop: '4px solid #f0ead6', marginTop: '2rem' }}>
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+          <header style={{ background: '#1e90ff', borderBottom: '4px solid #f0ead6', marginBottom: '2rem' }}>
+            <nav style={{ display: 'flex', gap: '1.5rem', padding: '1rem 2rem', maxWidth: 900, margin: '0 auto' }}>
+              <a href="/" style={{ fontWeight: 900, color: '#f0ead6' }}>EDUcational</a>
+              <a href="/shop" style={{fontWeight: 600, color: '#f0ead6'  }}>Shop</a>
+              <a href="/product" style={{ fontWeight: 600, color: '#f0ead6'  }}>Product</a>
+              <a href="/cart" style={{ fontWeight: 600, color: '#f0ead6' }}>Cart</a>
+              <a href="/checkout" style={{ fontWeight: 600, color: '#f0ead6' }}>Checkout</a>
+            </nav>
+          </header>
+          <main style={{ minHeight: '100vh', maxWidth: 900, margin: '0 auto' }}>{children}</main>
+          <footer style={{ background: '#1e90ff',textAlign: 'center', fontWeight: 400, padding: '2rem 0', color: '#f0ead6', fontSize: 20, borderTop: '4px solid #f0ead6', marginTop: '2rem' }}>
           &hearts; {new Date().getFullYear()} EDUcational. All rights reserved.
         </footer>
       </body>

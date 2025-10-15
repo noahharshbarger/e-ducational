@@ -23,7 +23,7 @@ export default function Button({ children, onClick, type = "button", className =
     return (
         <button
             type={type}
-            className="px-4 rounded bg-fuchsia-500 text-white font-semibold shadow-lg hover:bg-white transition mr-4 hover:text-black animate-bounce disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 rounded bg-fuchsia-500 text-white font-semibold shadow-lg hover:bg-purple-500 transition mr-4 animate-pulse disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={onClick}
             disabled={onClick ? false : true}
             >
