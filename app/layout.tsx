@@ -1,5 +1,10 @@
+
+
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+// Import CartProvider to provide cart context to the entire app
+import { CartProvider } from "@/components/CartContext";
 
 
 const inter = Inter({
@@ -22,9 +27,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // CartProvider wraps the app and provides cart state and functions to all components
+  // This is required for useCart() to work anywhere in the app
   return (
     <html lang="en">
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        {/* CartProvider must wrap your app so useCart() returns the context value, not undefined */}
+        <CartProvider>
           <header style={{ background: '#1e90ff', borderBottom: '4px solid #f0ead6', marginBottom: '2rem' }}>
             <nav style={{ display: 'flex', gap: '1.5rem', padding: '1rem 2rem', maxWidth: 900, margin: '0 auto' }}>
               <a href="/" style={{ fontWeight: 900, color: '#f0ead6' }}>EDUcational</a>
@@ -36,8 +45,9 @@ export default function RootLayout({
           </header>
           <main style={{ minHeight: '100vh', maxWidth: 900, margin: '0 auto' }}>{children}</main>
           <footer style={{ background: '#1e90ff',textAlign: 'center', fontWeight: 400, padding: '2rem 0', color: '#f0ead6', fontSize: 20, borderTop: '4px solid #f0ead6', marginTop: '2rem' }}>
-          &hearts; {new Date().getFullYear()} EDUcational. All rights reserved.
-        </footer>
+            &hearts; {new Date().getFullYear()} EDUcational. All rights reserved.
+          </footer>
+        </CartProvider>
       </body>
     </html>
   );

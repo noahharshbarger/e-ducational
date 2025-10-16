@@ -20,14 +20,23 @@ export default function CheckoutPage() {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     if (!form.name || !form.email || !form.address) {
       setError("All fields are required.");
       return;
     }
     setError("");
-    setSubmitted(true);
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cart, user: form })
+    });
+    if (res.ok) {
+      setSubmitted(true);
+    } else {
+      setError("Checkout failed. Try again.");
+    }
   };
 
   return (
@@ -55,7 +64,9 @@ export default function CheckoutPage() {
               <Input label="Email" name="email" type="email" value={form.email} onChange={handleChange} required />
               <Input label="Address" name="address" value={form.address} onChange={handleChange} required />
               {error && <div className="text-red-500 text-sm">{error}</div>}
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 mt-2">Place Order</Button>
+              <Button type="submit" onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-700 mt-2">
+                Place Order
+              </Button>
             </form>
           )}
         </Card>

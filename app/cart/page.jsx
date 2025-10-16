@@ -1,25 +1,13 @@
 "use client"
 
-import { useState } from "react";
+import { useCart } from "@/components/CartContext";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 
+
 export default function CartPage() {
-  const [cart, setCart] = useState([
-    { id: 1, name: "Product A", quantity: 2, price: 19.99 }
-  ]);
-
-  const updateQuantity = (id, qty) => {
-    setCart(cart => cart.map(item => item.id === id ? { ...item, quantity: Math.max(1, Number(qty)) } : item));
-  };
-
-  const removeItem = id => {
-    setCart(cart => cart.filter(item => item.id !== id));
-  };
-
-  const clearCart = () => setCart([]);
-
+  const { cart, updateQuantity, removeFromCart, clearCart } = useCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
@@ -40,10 +28,10 @@ export default function CartPage() {
                 type="number"
                 min={1}
                 value={item.quantity}
-                onChange={e => updateQuantity(item.id, e.target.value)}
+                onChange={e => updateQuantity(item.id, Math.max(1, Number(e.target.value)))}
                 className="w-15"
-                />
-                <Button onClick={() => removeItem(item.id)} className="bg-red-500 hover:bg-red-600">Remove</Button>
+              />
+              <Button onClick={() => removeFromCart(item.id)} className="bg-red-500 hover:bg-red-600">Remove</Button>
             </Card>
           ))}
           <div className="flex justify-between items-center mt-4">
@@ -53,7 +41,7 @@ export default function CartPage() {
         </div>
       )}
     </main>
-  )
+  );
 }
 
 // 'use client'
