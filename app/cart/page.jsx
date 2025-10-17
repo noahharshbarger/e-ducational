@@ -12,6 +12,8 @@ export default function CartPage() {
 
   return (
     <main className="min-h-[60vh] flex flex-col items-center justify-center py-12 px-4">
+    // Cart page: shows items in the cart, allows updating/removing items
+    // Uses CartContext for global cart state
       <h1 className="text-4xl font-bold mb-4 text-purple-700">Cart</h1>
       {cart.length === 0 ? (
         <p className="text-lg text-gray-500">Your shopping cart is empty.</p>

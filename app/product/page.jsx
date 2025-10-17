@@ -13,6 +13,8 @@ export default function ProductPage() {
     description: "Learn everything about JavaScript",
     image: "file.svg",
   });
+    // Product page: shows details for a single product and allows adding to cart
+    // Fetches product data from API
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 

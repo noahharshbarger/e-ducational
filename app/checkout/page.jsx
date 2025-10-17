@@ -9,6 +9,8 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({ name: "", email: "", address: "" });
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+    // Checkout page: displays order summary and handles checkout form
+    // Posts checkout data to API and shows result
   // Example cart data (replace with real cart state in a full app)
   const cart = [
     { id: 1, name: "Product A", quantity: 2, price: 19.99 },
