@@ -9,19 +9,26 @@ import Button from "@/components/Button";
 export default function Shop() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    // --- Teaching Moment: State for search and filter ---
+    // These states control the search input and category filter, enabling dynamic product filtering.
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("");
     const quantityRefs = useRef({});
     const { addToCart } = useCart();
     // useRef for the focus input example (must be at top level)
     const focusRef = useRef(null);
 
     useEffect(() => {
+        // --- Teaching Moment: Fetch products from API ---
+        // In a real ecommerce site, products are fetched from a backend API.
+        // This enables dynamic updates and scalability for large catalogs.
         fetch("api/products")
             .then((res) => res.json())
             .then((data) => {
                 setProducts(data);
                 setLoading(false);
             });
-        }, []);
+    }, []);
 
     return (
         <main className="min-h-[80vh] bg-gradient-to-br from-blue-100 to-purple-100 py-12 px-4">
@@ -32,67 +39,88 @@ export default function Shop() {
                 <p className="text-xl text-gray-600 mb-6 mt-4 bg-gradient-to-r from-fuchsia-600 via-blue-900 to-purple-600 bg-clip-text text-transparent">
                     Discover the best products on your learning journey.
                 </p>
+                {/* --- Teaching Moment: Search and Filter UI --- */}
+                {/* A search bar and category dropdown help users quickly find products. */}
+                <div className="flex flex-col md:flex-row gap-4 items-center justify-center mb-8">
+                    {/* Search Input: Filters products by name in real time */}
+                    <Input
+                        label="Search"
+                        type="text"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        placeholder="Search products..."
+                        className="w-64"
+                    />
+                    {/* Category Filter: Shows only products in the selected category */}
+                    <select
+                        value={category}
+                        onChange={e => setCategory(e.target.value)}
+                        className="border border-purple-400 rounded px-4 py-2"
+                    >
+                        <option value="">All Categories</option>
+                        {/* Dynamically generate categories from products */}
+                        {[...new Set(products.map(p => p.category).filter(Boolean))].map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className="text-xl text-gray-700 mb-6">
-                    <Button className="px-6">
-                        Featured
-                    </Button>
-                    <Button className="px-6">
-                        New Arrivals
-                    </Button>
+                    <Button className="px-6">Featured</Button>
+                    <Button className="px-6">New Arrivals</Button>
                 </div>
             </section>
             <section className="max-w-5xl mx-auto grid grid-cols-1 gap-8">
                 {loading ? (
                     <div className="text-center text-lg">Loading products...</div>
                 ) : (
-                    products.map((product) => (
-                        <Card key={product.id} title={product.name}
-                            className="flex flex-row items-center gap-8 hover:scale-102 hover:shadow-2xl transition-all border border-purple-500">
-                                <div className="w-32 h-32 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                                    <span className="text-5xl text-white font-bold">{product.name[0]}</span>
-                                </div>
-                                <div>
-                                    <p className="text-gray-500 mb-2">Price: ${product.price}</p>
-                                    <Input
-                                        label="Quantity"
-                                        type="number"
-                                        min={1}
-                                        defaultValue={1}
-                                        className="w-24"
-                                        // Assign a ref to each quantity input so we can read its value on Add to Cart
-                                        ref={el => quantityRefs.current[product.id] = el}
-                                    />
-            {/* useRef example: focus an input by clicking a button */}
-            <section className="max-w-xl mx-auto mt-16">
-                <h2 className="text-2xl font-bold mb-2">useRef Example: Focus Input</h2>
-                <p className="mb-2 text-gray-600">useRef can also be used to directly access a DOM element, like focusing an input:</p>
-                <div className="flex gap-2 items-end">
-                    <Input label="Focus Me" ref={focusRef} className="w-48" />
-                    <Button onClick={() => focusRef.current && focusRef.current.focus()}>
-                        Focus Input
-                    </Button>
-                </div>
-            </section>
-                                    <Input label="Gift Code" type="text" placeholder="Enter code" className="w-48" />
-                                    <Button
-                                        className="mt-4"
-                                        onClick={async () => {
-                                            const qty = Number(quantityRefs.current[product.id]?.value || 1);
-                                            addToCart(product, qty);
-
-                                            await fetch("/api/cart", {
-                                                method: "POST",
-                                                headers: { "Content-Type": "application/json" },
-                                                body: JSON.stringify({ productId: product.id, quantity: qty })
-                                            });
-                                            alert(`Added ${qty} x ${product.name} to cart!`);
-                                        }}
-                                    >
-                                        Add to Cart
-                                    </Button>
-                                </div>
-                        </Card>
-                    ))
+                    // --- Teaching Moment: Filtering Logic ---
+                    // This logic filters products by search text and category before rendering.
+                    products
+                        .filter(product =>
+                            (!search || product.name.toLowerCase().includes(search.toLowerCase())) &&
+                            (!category || product.category === category)
+                        )
+                        .map((product) => (
+                            <Card key={product.id} title={product.name}
+                                className="flex flex-row items-center gap-8 hover:scale-102 hover:shadow-2xl transition-all border border-purple-500">
+                                    <div className="w-32 h-32 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                                        <span className="text-5xl text-white font-bold">{product.name[0]}</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500 mb-2">Price: ${product.price}</p>
+                                        <p className={`mb-2 font-semibold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>{product.stock === 0 ? 'Out of Stock' : `In Stock: ${product.stock}`}</p>
+                                        {/* --- Teaching Moment: Disable actions for out-of-stock products --- */}
+                                        <Input
+                                            label="Quantity"
+                                            type="number"
+                                            min={1}
+                                            max={product.stock}
+                                            defaultValue={1}
+                                            className="w-24"
+                                            ref={el => quantityRefs.current[product.id] = el}
+                                            disabled={product.stock === 0}
+                                        />
+                                        <Input label="Gift Code" type="text" placeholder="Enter code" className="w-48" disabled={product.stock === 0} />
+                                        <Button
+                                            className="mt-4"
+                                            onClick={async () => {
+                                                const qty = Number(quantityRefs.current[product.id]?.value || 1);
+                                                if (product.stock === 0) return;
+                                                addToCart(product, qty);
+                                                await fetch("/api/cart", {
+                                                    method: "POST",
+                                                    headers: { "Content-Type": "application/json" },
+                                                    body: JSON.stringify({ productId: product.id, quantity: qty })
+                                                });
+                                                alert(`Added ${qty} x ${product.name} to cart!`);
+                                            }}
+                                            disabled={product.stock === 0}
+                                        >
+                                            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                        </Button>
+                                    </div>
+                            </Card>
+                        ))
                 )}
             </section>
         </main>
