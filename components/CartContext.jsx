@@ -26,13 +26,17 @@ export function CartProvider({ children }) {
 
     const addToCart = (product, quantity = 1) => {
         setCart(cart => {
+            const numPrice = Number(product.price);
+            const numQuantity = Number(quantity);
             const existing = cart.find(item => item.id === product.id);
             if (existing) {
                 return cart.map(item =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+                    item.id === product.id
+                        ? { ...item, quantity: Number(item.quantity) + numQuantity, price: numPrice }
+                        : item
                 );
             }
-            return [...cart, { ...product, quantity }];
+            return [...cart, { ...product, price: numPrice, quantity: numQuantity }];
         });
     };
     const removeFromCart = id => setCart(cart => cart.filter(item => item.id !== id));
