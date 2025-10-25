@@ -5,23 +5,27 @@ import Button from "./Button";
 
 export default function Navigation() {
     const { user, logout } = useAuth();
-    return (
-    <nav style={{ display: 'flex', gap: '1.5rem', padding: '1rem 2rem', maxWidth: 900, margin: '0 auto' }}>
-        <a href="/" style={{ fontWeight: 900, color: '#f0ead6' }}>EDUcational</a>
-        <a href="/shop" style={{fontWeight: 600, color: '#f0ead6'  }}>Shop</a>
-        <a href="/product" style={{ fontWeight: 600, color: '#f0ead6'  }}>Product</a>
-        <a href="/cart" style={{ fontWeight: 600, color: '#f0ead6' }}>Cart</a>
-        <a href="/checkout" style={{ fontWeight: 600, color: '#f0ead6' }}>Checkout</a>
-        {!user && <a href="/login" style={{ fontWeight: 600, color: '#f0ead6' }}>Login</a>}
-        {!user && <a href="/signup" style={{ fontWeight: 600, color: '#f0ead6'}}>Sign Up</a>}
-        {user && (
-            <>
-                <a href="/profile" style={{ fontWeight: 600, color: '#f0ead6' }}>Profile</a>
-                <span style={{ fontWeight: 600, color: '#f0ead6' }}>Hello {user.email}</span>
-                <Button onClick={logout} style={{ fontWWeight: 600, color: '#f0ead6', background: 'none', border: 'none', cursor: 'pointer' }}>Logout</Button>
-            </>
-        )}
-    </nav>
+        return (
+        <nav className="flex items-center justify-between px-8 py-4 max-w-5xl mx-auto">
+            <div className="flex items-center gap-8">
+                <a href="/" className="text-2xl font-extrabold text-white tracking-tight hover:text-blue-200 transition">EDUcational</a>
+                <a href="/shop" className="font-semibold text-white hover:text-blue-200 transition">Shop</a>
+                <a href="/product" className="font-semibold text-white hover:text-blue-200 transition">Product</a>
+                <a href="/cart" className="font-semibold text-white hover:text-blue-200 transition">Cart</a>
+                <a href="/checkout" className="font-semibold text-white hover:text-blue-200 transition">Checkout</a>
+            </div>
+            <div className="flex items-center gap-6">
+                {!user && <a href="/login" className="font-semibold text-white hover:text-blue-200 transition">Login</a>}
+                {!user && <a href="/signup" className="font-semibold text-white hover:text-blue-200 transition">Sign Up</a>}
+                {user && (
+                    <>
+                        <a href="/profile" className="font-semibold text-white hover:text-blue-200 transition">Profile</a>
+                        <span className="font-semibold text-blue-100">Hello {user.email}</span>
+                        <Button onClick={logout} className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition font-semibold">Logout</Button>
+                    </>
+                )}
+            </div>
+        </nav>
 
     )
 }

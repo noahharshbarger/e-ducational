@@ -19,21 +19,39 @@
 //   );
 // }
 
-export default function Button({ children, onClick, type = "button", disabled = false, className = "" }) {
-    // Button component for reusable styled buttons
-    // 'type' prop allows use as 'submit' for forms or 'button' for actions
-    // 'onClick' handles click events (optional for form submit)
-    // 'disabled' prop controls whether the button is disabled
-    // Only disables when 'disabled' is true, so forms can submit
-    // 'className' lets you add extra Tailwind or custom classes
+export default function Button({ children, onClick, type = "button", disabled = false, className = "", href, loading = false }) {
+    // If href is provided, render as a link for navigation
+    if (href) {
+        return (
+            <a
+                href={href}
+                className={`px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-10 disabled:cursor-not-allowed ${className}`}
+                aria-disabled={disabled}
+                tabIndex={disabled ? -1 : 0}
+                onClick={e => {
+                    if (disabled) e.preventDefault();
+                    if (onClick) onClick(e);
+                }}
+            >
+                {children}
+            </a>
+        );
+    }
+    // Otherwise, render as a button
     return (
         <button
-            type={type} // 'submit' for forms, 'button' for regular actions
-            className="px-4 rounded bg-fuchsia-500 text-white font-semibold shadow-lg hover:bg-purple-500 transition mr-4 animate-pulse disabled:opacity-50 disabled:cursor-not-allowed" // Tailwind styling
-            onClick={onClick} // Optional: only needed for button actions
-            disabled={disabled} // Only disables if 'disabled' is true
+            type={type}
+            className={`px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-10 disabled:cursor-not-allowed ${className}`}
+            onClick={onClick}
+            disabled={disabled || loading}
+            aria-busy={loading}
         >
-            {children}
+            {loading ? (
+                <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+                    Loading...
+                </span>
+            ) : children}
         </button>
-    )
+    );
 }

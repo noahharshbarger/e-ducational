@@ -31,12 +31,18 @@ export default function Shop() {
     }, []);
 
     return (
-        <main className="min-h-[80vh] bg-gradient-to-br from-blue-100 to-purple-100 py-12 px-4">
+        <main className="min-h-[80vh] bg-gradient-to-br from-blue-50 via-white to-blue-100 py-12 px-4">
+            {/* Announcement Bar */}
+            <div className="w-full bg-blue-600 text-white text-center py-2 rounded mb-8 shadow-md font-semibold tracking-wide">
+                🎉 Free shipping on all course bundles this week!
+            </div>
             <section className="max-w-4xl mx-auto text-center mb-12">
-                <h1 className="text-5xl font-extrabold bg-gradient-to-r from-fuchsia-600 via-blue-900 to-purple-600 bg-clip-text text-transparent mb-2 drop-shadow-lg">
+                {/* Section Divider */}
+                <div className="w-24 h-2 mx-auto mb-6 bg-gradient-to-r from-blue-400 via-blue-600 to-blue-400 rounded-full" />
+                <h1 className="text-5xl font-extrabold text-blue-800 mb-2 drop-shadow-lg">
                     Welcome to the Shop
                 </h1>
-                <p className="text-xl text-gray-600 mb-6 mt-4 bg-gradient-to-r from-fuchsia-600 via-blue-900 to-purple-600 bg-clip-text text-transparent">
+                <p className="text-xl text-blue-600 mb-6 mt-4">
                     Discover the best products on your learning journey.
                 </p>
                 {/* --- Teaching Moment: Search and Filter UI --- */}
@@ -49,13 +55,13 @@ export default function Shop() {
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search products..."
-                        className="w-64"
+                        className="w-64 border-blue-300 focus:border-blue-500 focus:ring-blue-500"
                     />
                     {/* Category Filter: Shows only products in the selected category */}
                     <select
                         value={category}
                         onChange={e => setCategory(e.target.value)}
-                        className="border border-purple-400 rounded px-4 py-2"
+                        className="border border-blue-300 rounded px-4 py-2 bg-white text-blue-700 focus:border-blue-500 focus:ring-blue-500"
                     >
                         <option value="">All Categories</option>
                         {/* Dynamically generate categories from products */}
@@ -64,7 +70,7 @@ export default function Shop() {
                         ))}
                     </select>
                 </div>
-                <div className="text-xl text-gray-700 mb-6">
+                <div className="text-xl text-gray-700 mb-6 gap-4 flex justify-center">
                     <Button className="px-6">Featured</Button>
                     <Button className="px-6">New Arrivals</Button>
                 </div>
@@ -73,92 +79,65 @@ export default function Shop() {
                 {loading ? (
                     <div className="text-center text-lg">Loading products...</div>
                 ) : (
-                    // --- Teaching Moment: Filtering Logic ---
-                    // This logic filters products by search text and category before rendering.
-                    products
-                        .filter(product =>
-                            (!search || product.name.toLowerCase().includes(search.toLowerCase())) &&
-                            (!category || product.category === category)
-                        )
-                        .map((product) => (
-                            <Card key={product.id} title={product.name}
-                                className="flex flex-row items-center gap-8 hover:scale-102 hover:shadow-2xl transition-all border border-purple-500">
-                                    <div className="w-32 h-32 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                                        <span className="text-5xl text-white font-bold">{product.name[0]}</span>
-                                    </div>
-                                    <div>
-                                        <p className="text-gray-500 mb-2">Price: ${product.price}</p>
-                                        <p className={`mb-2 font-semibold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>{product.stock === 0 ? 'Out of Stock' : `In Stock: ${product.stock}`}</p>
-                                        {/* --- Teaching Moment: Disable actions for out-of-stock products --- */}
-                                        <Input
-                                            label="Quantity"
-                                            type="number"
-                                            min={1}
-                                            max={product.stock}
-                                            defaultValue={1}
-                                            className="w-24"
-                                            ref={el => quantityRefs.current[product.id] = el}
-                                            disabled={product.stock === 0}
-                                        />
-                                        <Input label="Gift Code" type="text" placeholder="Enter code" className="w-48" disabled={product.stock === 0} />
-                                        <Button
-                                            className="mt-4"
-                                            onClick={async () => {
-                                                const qty = Number(quantityRefs.current[product.id]?.value || 1);
-                                                if (product.stock === 0) return;
-                                                addToCart(product, qty);
-                                                await fetch("/api/cart", {
-                                                    method: "POST",
-                                                    headers: { "Content-Type": "application/json" },
-                                                    body: JSON.stringify({ productId: product.id, quantity: qty })
-                                                });
-                                                alert(`Added ${qty} x ${product.name} to cart!`);
-                                            }}
-                                            disabled={product.stock === 0}
-                                        >
-                                            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                                        </Button>
-                                    </div>
-                            </Card>
-                        ))
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                        {products
+                            .filter(product =>
+                                (!search || product.name.toLowerCase().includes(search.toLowerCase())) &&
+                                (!category || product.category === category)
+                            )
+                            .map((product) => (
+                                <div key={product.id} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center border border-blue-100 transition-transform duration-200 hover:scale-105 hover:shadow-2xl group">
+                                    {/* Product image or placeholder */}
+                                    <img src={product.image || '/logo.png'} alt={product.name} className="w-24 h-24 object-cover rounded-full mb-4 border-2 border-blue-300 group-hover:border-blue-500 transition" />
+                                    <span className="text-xl font-bold text-gray-800 mb-1 group-hover:text-blue-700 transition">{product.name}</span>
+                                    {/* Category tag */}
+                                    {product.category && (
+                                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded mb-2">{product.category}</span>
+                                    )}
+                                    <span className="text-lg text-blue-600 font-semibold mb-2">${product.price}</span>
+                                    <span className={`mb-2 font-semibold ${product.stock === 0 ? 'text-red-500' : 'text-green-600'}`}>{product.stock === 0 ? 'Out of Stock' : `In Stock: ${product.stock}`}</span>
+                                    <Input
+                                        label="Quantity"
+                                        type="number"
+                                        min={1}
+                                        max={product.stock}
+                                        defaultValue={1}
+                                        className="w-24 mb-2"
+                                        ref={el => quantityRefs.current[product.id] = el}
+                                        disabled={product.stock === 0}
+                                    />
+                                    <Input label="Gift Code" type="text" placeholder="Enter code" className="w-48 mb-2" disabled={product.stock === 0} />
+                                    <Button
+                                        className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition"
+                                        onClick={async () => {
+                                            const qty = Number(quantityRefs.current[product.id]?.value || 1);
+                                            if (product.stock === 0) return;
+                                            addToCart(product, qty);
+                                            await fetch("/api/cart", {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ productId: product.id, quantity: qty })
+                                            });
+                                            alert(`Added ${qty} x ${product.name} to cart!`);
+                                        }}
+                                        disabled={product.stock === 0}
+                                    >
+                                        {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                    </Button>
+                                </div>
+                            ))}
+                    </div>
                 )}
+            {/* Trust Badge Section */}
+            <section className="max-w-4xl mx-auto py-8 px-4 flex flex-col items-center gap-4 mt-16">
+                <div className="flex gap-6 justify-center items-center">
+                    <img src="/vercel.svg" alt="Vercel Hosted" className="w-12 h-12" />
+                    <img src="/next.svg" alt="Powered by Next.js" className="w-12 h-12" />
+                    <img src="/window.svg" alt="Secure Checkout" className="w-12 h-12" />
+                </div>
+                <p className="text-gray-500 text-center text-lg">Trusted by thousands of learners. Fast, secure, and reliable.</p>
+            </section>
             </section>
         </main>
     );
 }
-//
-
-// export default function ShopPage() {
-//   return (
-//     <main className="min-h-[80vh] bg-gradient-to-br from-blue-50 to-purple-100 py-12 px-4">
-//       <section className="max-w-4xl mx-auto text-center mb-12">
-//         <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-fuchsia-500 to-purple-600 bg-clip-text text-transparent drop-shadow-lg mb-4">
-//           Welcome to the Shop
-//         </h1>
-//         <p className="text-xl text-gray-700 mb-6">
-//           Discover the best digital products for your learning journey.
-//         </p>
-//         <div className="flex justify-center gap-4">
-//           <button className="px-6 py-2 rounded-full bg-blue-600 text-white font-semibold shadow-lg hover:bg-blue-700 transition">Featured</button>
-//           <button className="px-6 py-2 rounded-full bg-purple-600 text-white font-semibold shadow-lg hover:bg-purple-700 transition">New Arrivals</button>
-//         </div>
-//       </section>
-//       <section className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-//         {[1,2,3,4,5,6].map((i) => (
-//           <div
-//             key={i}
-//             className="bg-white rounded-3xl shadow-xl p-6 flex flex-col items-center hover:scale-105 hover:shadow-2xl transition-all border border-purple-100"
-//           >
-//             <div className="w-24 h-24 bg-gradient-to-tr from-blue-400 to-purple-400 rounded-full flex items-center justify-center mb-4">
-//               <span className="text-3xl text-white font-bold">{String.fromCharCode(65 + i)}</span>
-//             </div>
-//             <h2 className="text-xl font-bold mb-2">Product {i}</h2>
-//             <p className="text-gray-500 mb-4 text-center">Amazing product description goes here. Make your learning awesome!</p>
-//             <span className="text-lg font-semibold text-purple-600 mb-2">${i * 19 + 9}.99</span>
-//             <button className="mt-auto px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold shadow hover:from-blue-600 hover:to-purple-600 transition">Add to Cart</button>
-//           </div>
-//         ))}
-//       </section>
-//     </main>
-//   );
-// }
